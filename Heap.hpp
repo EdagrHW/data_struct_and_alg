@@ -15,7 +15,10 @@ public:
 	bool empty();
 	~Heap() = default;
 private:
+	///交换两个下标的值
 	void swap(size_t left, size_t right);
+	///从指定下标位置开始自上而下堆话
+	void heapify(size_t index);
 private:
 	std::vector<T> _datas;
 };
@@ -23,14 +26,23 @@ private:
 template<typename T>
 inline Heap<T>::Heap(std::vector<T>& data)
 {
-	//堆的构建
+	_datas.assign(data.begin(), data.end());
+	size_t i = (_datas.size() - 1) / 2;
+	while (true)
+	{
+		heapify(i);
+		if (--i == 0)
+		{
+			heapify(i);
+			break;
+		}
+	}
 }
 
 template<typename T>
 inline T Heap<T>::pop()
 {
 	T head = _datas[0];
-	//自上而下比较
 	T tailValue = _datas[_datas.size() - 1];
 	_datas.pop_back();
 	if (_datas.empty())
@@ -38,49 +50,7 @@ inline T Heap<T>::pop()
 		return head;
 	}
 	_datas[0] = tailValue;
-	for (size_t i = 0; i < _datas.size(); )
-	{
-		//左子节点
-		size_t leftIndex = 2 * i + 1;
-		//右子节点
-		size_t rightIndex = 2 * i + 2;
-
-		size_t maxIndex = 0;
-
-		//获取左右的最大值
-		if (leftIndex < _datas.size())
-		{
-			if (rightIndex < _datas.size())
-			{
-				if (_datas[leftIndex] > _datas[rightIndex])
-				{
-					maxIndex = leftIndex;
-				}
-				else
-				{
-					maxIndex = rightIndex;
-				}
-			}
-			else
-			{
-				maxIndex = leftIndex;
-			}
-		}
-		else
-		{
-			break;
-		}
-
-		if (_datas[maxIndex] > _datas[i])
-		{
-			swap(maxIndex, i);
-			i = maxIndex;
-		}
-		else
-		{
-			break;
-		}
-	}
+	heapify(0);
 	return head;
 }
 
@@ -122,4 +92,31 @@ inline void Heap<T>::swap(size_t left, size_t right)
 	T temp = _datas[left];
 	_datas[left] = _datas[right];
 	_datas[right] = temp;
+}
+
+template<typename T>
+inline void Heap<T>::heapify(size_t index)
+{
+	while (true)
+	{
+		size_t maxPos = index;
+		size_t leftSubIndex = 2 * index + 1;
+		size_t rightSubIndex = 2 * index + 2;
+		if (leftSubIndex < _datas.size()
+			&& _datas[leftSubIndex] > _datas[index])
+		{
+			maxPos = leftSubIndex;
+		}
+		if (rightSubIndex < _datas.size()
+			&& _datas[rightSubIndex] > _datas[maxPos])
+		{
+			maxPos = rightSubIndex;
+		}
+		if (maxPos == index)
+		{
+			break;
+		}
+		swap(maxPos, index);
+		index = maxPos;
+	}
 }

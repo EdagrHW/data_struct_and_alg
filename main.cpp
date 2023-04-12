@@ -3,12 +3,9 @@
 using namespace std;
 int main()
 {
-	Heap<int> heap;
+	
 	vector<int> array = {6,3,5,4,2,9,0,1,4};
-	for (int i : array)
-	{
-		heap.push(i);
-	}
+	Heap<int> heap(array);
 
 	while (!heap.empty())
 	{
