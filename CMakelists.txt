@@ -1,0 +1,6 @@
+project(struct_alg)
+
+include_directories(.)
+aux_source_directory(. SRC_DIR)
+
+add_executable(struct_alg ${SRC_DIR})
